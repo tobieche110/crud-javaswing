@@ -9,5 +9,5 @@ public interface Operaciones {
 	public boolean eliminar(Object obj);
 	public boolean modificar(Object obj);
 	
-	public ArrayList<Object[]> consultar();
+	public ArrayList<Object[]> consultar(); //devuelve arreglo bidimensional con todos los elementos de la tabla
 }

@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -117,10 +118,39 @@ public class DAOalumno implements Operaciones{
 		}
 	}
 
+	@SuppressWarnings("finally")
 	@Override
 	public ArrayList<Object[]> consultar() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object[]> data = new ArrayList<>();
+		Connection con;
+		PreparedStatement pst;
+		ResultSet rs;
+		
+		String sql = "SELECT * FROM alumno";
+		
+		try {
+			Class.forName(db.getDriver());
+			con = DriverManager.getConnection(db.getUrl(),db.getUss(),db.getPwd());
+			
+			pst = con.prepareStatement(sql);
+			rs = pst.executeQuery();
+			
+			//convertimos rs a ArrayList[]
+			while(rs.next()) {
+				Object[] fila = new Object[4];
+				for(int i=0; i<=3; i++) {
+					fila[i] = rs.getObject(i+1);
+				}
+				data.add(fila);
+			}
+			con.close();
+			
+		} catch (SQLException | ClassNotFoundException e){
+			JOptionPane.showMessageDialog(null, "ERROR: "+e.getMessage());
+		} finally {
+			return data;
+		}
+
 	}
 
 }
