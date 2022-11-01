@@ -88,7 +88,7 @@ public class DAOalumno implements Operaciones{
 		alumno = (alumno) obj;
 		Connection con;
 		PreparedStatement pst;
-		String sql = "UPDATE alumno SET apellido=?, nombre=?, anioIngreso=? WHERE carnet=?";
+		String sql = "UPDATE alumno SET apellido=?, nombre=?, anioIngreso=? WHERE legajo=?";
 		
 		try {
 			//Nos conectamos a la BDD

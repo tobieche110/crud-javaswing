@@ -6,8 +6,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JTable;
@@ -15,9 +19,15 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JTextPane;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ListSelectionModel;
+import dao.DAOalumno;
+import modelo.alumno;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 @SuppressWarnings("unused")
 public class VistasAlumno {
@@ -28,6 +38,11 @@ public class VistasAlumno {
 	private JTextField textNombre;
 	private JTextField textAnioIngreso;
 	private JTable tblData;
+	//TABLA
+	String columnas[] = {"Legajo","Apellido","Nombre","Año de Ingreso"};
+	DefaultTableModel model = new DefaultTableModel(columnas, 0);
+	DAOalumno dao = new DAOalumno();
+	ArrayList<Object[]> data = new ArrayList<>();
 
 	/**
 	 * Launch the application.
@@ -50,6 +65,7 @@ public class VistasAlumno {
 	 */
 	public VistasAlumno() {
 		initialize();
+		cargar();
 	}
 
 	/**
@@ -104,14 +120,77 @@ public class VistasAlumno {
 		frame.getContentPane().add(lblNewLabel_4);
 		
 		JButton btnModificar = new JButton("MODIFICAR");
+		btnModificar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int newLegajo = Integer.parseInt(textLegajo.getText());
+					int newAnio = Integer.parseInt(textAnioIngreso.getText());
+					alumno alumno1 = new alumno(newLegajo, textApellido.getText(),textNombre.getText(), newAnio);
+					
+					if(dao.modificar(alumno1)) {
+						JOptionPane.showMessageDialog(null, "Se ha modificado con éxito");
+					}else {
+						JOptionPane.showMessageDialog(null, "Ha habido un error: "+e);
+					}
+					cargar();
+					
+				} catch (NumberFormatException ex) {
+					//Mensaje de error si se ingresa otra cosa que no sea un numero en legajo o año de ingreso
+					JOptionPane.showMessageDialog(null, "Ingrese valores válidos");;
+				}
+			}
+		});
 		btnModificar.setBounds(524, 343, 103, 23);
 		frame.getContentPane().add(btnModificar);
 		
 		JButton btnAgregar = new JButton("AGREGAR");
+		btnAgregar.addActionListener(new ActionListener() {
+			//What button does when pressed
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int newLegajo = Integer.parseInt(textLegajo.getText());
+					int newAnio = Integer.parseInt(textAnioIngreso.getText());
+					alumno alumno1 = new alumno(newLegajo, textApellido.getText(),textNombre.getText(), newAnio);
+					
+					if(dao.insertar(alumno1)) {
+						JOptionPane.showMessageDialog(null, "Se ha agregado con éxito");
+					}else {
+						JOptionPane.showMessageDialog(null, "Ha habido un error: "+e);
+					}
+					cargar();
+					
+				} catch (NumberFormatException ex) {
+					//Mensaje de error si se ingresa otra cosa que no sea un numero en legajo o año de ingreso
+					JOptionPane.showMessageDialog(null, "Ingrese valores válidos");;
+				}
+			}
+		});	
 		btnAgregar.setBounds(637, 343, 89, 23);
 		frame.getContentPane().add(btnAgregar);
 		
 		JButton btnEliminar = new JButton("ELIMINAR");
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int newLegajo = Integer.parseInt(textLegajo.getText());
+					int newAnio = Integer.parseInt(textAnioIngreso.getText());
+					alumno alumno1 = new alumno(newLegajo, textApellido.getText(),textNombre.getText(), newAnio);
+					
+					if(dao.eliminar(alumno1)) {
+						JOptionPane.showMessageDialog(null, "Se ha eliminado con éxito");
+					}else {
+						JOptionPane.showMessageDialog(null, "Ha habido un error: "+e);
+					}
+					System.out.println("0");
+					cargar();
+					
+				} catch (NumberFormatException ex) {
+					//Mensaje de error si se ingresa otra cosa que no sea un numero en legajo o año de ingreso
+					JOptionPane.showMessageDialog(null, "Ingrese valores válidos");;
+				}
+				
+			}
+		});
 		btnEliminar.setBounds(736, 343, 89, 23);
 		frame.getContentPane().add(btnEliminar);
 		
@@ -120,6 +199,21 @@ public class VistasAlumno {
 		frame.getContentPane().add(scrollPane);
 		
 		tblData = new JTable();
+		tblData.setDefaultEditor(Object.class, null); //hace la tabla no editable
+		//Evento para que ocurra algo cuando seleccionamos algo en la tabla
+		tblData.getSelectionModel().addListSelectionListener((ListSelectionListener) new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				 if (!e.getValueIsAdjusting() && tblData.getSelectedRow() != -1) { //al dar click, se selecciona 2 veces (raro). esto lo corrige. sin esto, al seleccionar y refrescar la tabla explota el codigo
+					 	textLegajo.setText(tblData.getValueAt(tblData.getSelectedRow(), 0).toString());
+						textApellido.setText(tblData.getValueAt(tblData.getSelectedRow(), 1).toString());
+						textNombre.setText(tblData.getValueAt(tblData.getSelectedRow(), 2).toString());
+						textAnioIngreso.setText(tblData.getValueAt(tblData.getSelectedRow(), 3).toString()); 
+				 }
+			}
+		});
+	 
+		
+		/*
 		tblData.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tblData.setModel(new DefaultTableModel(
 			new Object[][] {
@@ -147,6 +241,8 @@ public class VistasAlumno {
 				return columnEditables[column];
 			}
 		});
+		*/
+		
 		scrollPane.setViewportView(tblData);
 		
 		JLabel lblNewLabel_5 = new JLabel("Nota: No se puede editar el Legajo al ser una clave primaria.");
@@ -154,6 +250,15 @@ public class VistasAlumno {
 		lblNewLabel_5.setBounds(19, 367, 804, 26);
 		frame.getContentPane().add(lblNewLabel_5);
 	
+	}
+	
+	private void cargar() {
+		this.data = dao.consultar();
+		model.setRowCount(0);
+		for(Object [] dato : this.data) {
+			this.model.addRow(dato);
+		}
+		tblData.setModel(model);
 	}
 	
 }
