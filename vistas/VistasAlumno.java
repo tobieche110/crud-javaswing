@@ -25,19 +25,26 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.ListSelectionModel;
 import dao.DAOalumno;
 import modelo.alumno;
+import controlador.ControladorAlumno;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 @SuppressWarnings("unused")
 public class VistasAlumno {
-
+	
+	//all were only private
 	private JFrame frame;
-	private JTextField textLegajo;
-	private JTextField textApellido;
-	private JTextField textNombre;
-	private JTextField textAnioIngreso;
+	public static JTextField textLegajo;
+	public static JTextField textApellido;
+	public static JTextField textNombre;
+	public static JTextField textAnioIngreso;
 	private JTable tblData;
+	
+	//added by me
+	public static JButton btnModificar;
+	public static JButton btnAgregar;
+	public static JButton btnEliminar;
 	//TABLA
 	String columnas[] = {"Legajo","Apellido","Nombre","Año de Ingreso"};
 	DefaultTableModel model = new DefaultTableModel(columnas, 0);
@@ -65,7 +72,7 @@ public class VistasAlumno {
 	 */
 	public VistasAlumno() {
 		initialize();
-		cargar();
+		ControladorAlumno.cargar(tblData, data, model, dao, columnas);
 	}
 
 	/**
@@ -119,146 +126,46 @@ public class VistasAlumno {
 		lblNewLabel_4.setBounds(413, 316, 141, 20);
 		frame.getContentPane().add(lblNewLabel_4);
 		
-		JButton btnModificar = new JButton("MODIFICAR");
-		btnModificar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					int newLegajo = Integer.parseInt(textLegajo.getText());
-					int newAnio = Integer.parseInt(textAnioIngreso.getText());
-					alumno alumno1 = new alumno(newLegajo, textApellido.getText(),textNombre.getText(), newAnio);
-					
-					if(dao.modificar(alumno1)) {
-						JOptionPane.showMessageDialog(null, "Se ha modificado con éxito");
-					}else {
-						JOptionPane.showMessageDialog(null, "Ha habido un error: "+e);
-					}
-					cargar();
-					
-				} catch (NumberFormatException ex) {
-					//Mensaje de error si se ingresa otra cosa que no sea un numero en legajo o año de ingreso
-					JOptionPane.showMessageDialog(null, "Ingrese valores válidos");;
-				}
-			}
-		});
-		btnModificar.setBounds(524, 343, 103, 23);
-		frame.getContentPane().add(btnModificar);
-		
-		JButton btnAgregar = new JButton("AGREGAR");
-		btnAgregar.addActionListener(new ActionListener() {
-			//What button does when pressed
-			public void actionPerformed(ActionEvent e) {
-				try {
-					int newLegajo = Integer.parseInt(textLegajo.getText());
-					int newAnio = Integer.parseInt(textAnioIngreso.getText());
-					alumno alumno1 = new alumno(newLegajo, textApellido.getText(),textNombre.getText(), newAnio);
-					
-					if(dao.insertar(alumno1)) {
-						JOptionPane.showMessageDialog(null, "Se ha agregado con éxito");
-					}else {
-						JOptionPane.showMessageDialog(null, "Ha habido un error: "+e);
-					}
-					cargar();
-					
-				} catch (NumberFormatException ex) {
-					//Mensaje de error si se ingresa otra cosa que no sea un numero en legajo o año de ingreso
-					JOptionPane.showMessageDialog(null, "Ingrese valores válidos");;
-				}
-			}
-		});	
-		btnAgregar.setBounds(637, 343, 89, 23);
-		frame.getContentPane().add(btnAgregar);
-		
-		JButton btnEliminar = new JButton("ELIMINAR");
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					int newLegajo = Integer.parseInt(textLegajo.getText());
-					int newAnio = Integer.parseInt(textAnioIngreso.getText());
-					alumno alumno1 = new alumno(newLegajo, textApellido.getText(),textNombre.getText(), newAnio);
-					
-					if(dao.eliminar(alumno1)) {
-						JOptionPane.showMessageDialog(null, "Se ha eliminado con éxito");
-					}else {
-						JOptionPane.showMessageDialog(null, "Ha habido un error: "+e);
-					}
-					System.out.println("0");
-					cargar();
-					
-				} catch (NumberFormatException ex) {
-					//Mensaje de error si se ingresa otra cosa que no sea un numero en legajo o año de ingreso
-					JOptionPane.showMessageDialog(null, "Ingrese valores válidos");;
-				}
-				
-			}
-		});
-		btnEliminar.setBounds(736, 343, 89, 23);
-		frame.getContentPane().add(btnEliminar);
-		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(22, 40, 815, 265);
 		frame.getContentPane().add(scrollPane);
 		
 		tblData = new JTable();
 		tblData.setDefaultEditor(Object.class, null); //hace la tabla no editable
-		//Evento para que ocurra algo cuando seleccionamos algo en la tabla
-		tblData.getSelectionModel().addListSelectionListener((ListSelectionListener) new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				 if (!e.getValueIsAdjusting() && tblData.getSelectedRow() != -1) { //al dar click, se selecciona 2 veces (raro). esto lo corrige. sin esto, al seleccionar y refrescar la tabla explota el codigo
-					 	textLegajo.setText(tblData.getValueAt(tblData.getSelectedRow(), 0).toString());
-						textApellido.setText(tblData.getValueAt(tblData.getSelectedRow(), 1).toString());
-						textNombre.setText(tblData.getValueAt(tblData.getSelectedRow(), 2).toString());
-						textAnioIngreso.setText(tblData.getValueAt(tblData.getSelectedRow(), 3).toString()); 
-				 }
-			}
-		});
-	 
+		ControladorAlumno.seleccionar(tblData);
+		scrollPane.setViewportView(tblData);
+		
+		btnModificar = new JButton("MODIFICAR");
+		ControladorAlumno.modificar(tblData, data, model, dao, columnas);
+		btnModificar.setBounds(524, 343, 103, 23);
+		frame.getContentPane().add(btnModificar);
+		
+		btnAgregar = new JButton("AGREGAR");
+		ControladorAlumno.agregar(tblData, data, model, dao, columnas);	
+		btnAgregar.setBounds(637, 343, 89, 23);
+		frame.getContentPane().add(btnAgregar);
+		
+		btnEliminar = new JButton("ELIMINAR");
+		ControladorAlumno.eliminar(tblData, data, model, dao, columnas);	
+		btnEliminar.setBounds(736, 343, 89, 23);
+		frame.getContentPane().add(btnEliminar);
 		
 		/*
-		tblData.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tblData.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-			},
-			new String[] {
-				"Legajo", "Apellido", "Nombre", "A\u00F1o de Ingreso"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
-		*/
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(22, 40, 815, 265);
+		frame.getContentPane().add(scrollPane);
 		
+		tblData = new JTable();
+		tblData.setDefaultEditor(Object.class, null); //hace la tabla no editable
+		ControladorAlumno.seleccionar(tblData);
 		scrollPane.setViewportView(tblData);
+		*/
 		
 		JLabel lblNewLabel_5 = new JLabel("Nota: No se puede editar el Legajo al ser una clave primaria.");
 		lblNewLabel_5.setFont(new Font("Tahoma", Font.ITALIC, 13));
 		lblNewLabel_5.setBounds(19, 367, 804, 26);
 		frame.getContentPane().add(lblNewLabel_5);
 	
-	}
-	
-	private void cargar() {
-		this.data = dao.consultar();
-		model.setRowCount(0);
-		for(Object [] dato : this.data) {
-			this.model.addRow(dato);
-		}
-		tblData.setModel(model);
 	}
 	
 }
