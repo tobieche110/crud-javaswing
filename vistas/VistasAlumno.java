@@ -4,62 +4,42 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import java.awt.BorderLayout;
-import javax.swing.SwingConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import java.awt.Font;
-import java.awt.SystemColor;
-import java.util.ArrayList;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import javax.swing.JTextPane;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.ListSelectionModel;
-import dao.DAOalumno;
-import modelo.alumno;
+
 import controlador.ControladorAlumno;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
-@SuppressWarnings("unused")
 public class VistasAlumno {
 	
 	//all were only private
-	private JFrame frame;
-	public static JTextField textLegajo;
-	public static JTextField textApellido;
-	public static JTextField textNombre;
-	public static JTextField textAnioIngreso;
-	private JTable tblData;
+	public JFrame frame;
+	public JTextField textLegajo;
+	public JTextField textApellido;
+	public JTextField textNombre;
+	public JTextField textAnioIngreso;
+	public JTable tblData; //es la informacion de la tabla que se muestra en pantalla
 	
 	//added by me
-	public static JButton btnModificar;
-	public static JButton btnAgregar;
-	public static JButton btnEliminar;
-	//TABLA
-	String columnas[] = {"Legajo","Apellido","Nombre","Año de Ingreso"};
-	DefaultTableModel model = new DefaultTableModel(columnas, 0);
-	DAOalumno dao = new DAOalumno();
-	ArrayList<Object[]> data = new ArrayList<>();
-
+	public JButton btnModificar;
+	public JButton btnAgregar;
+	public JButton btnEliminar;
+	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
-			public void run() {
+			public void run() { //
 				try {
-					VistasAlumno window = new VistasAlumno();
-					window.frame.setVisible(true);
+					@SuppressWarnings("unused")
+					ControladorAlumno c1 = new ControladorAlumno();
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -72,7 +52,6 @@ public class VistasAlumno {
 	 */
 	public VistasAlumno() {
 		initialize();
-		ControladorAlumno.cargar(tblData, data, model, dao, columnas);
 	}
 
 	/**
@@ -132,34 +111,20 @@ public class VistasAlumno {
 		
 		tblData = new JTable();
 		tblData.setDefaultEditor(Object.class, null); //hace la tabla no editable
-		ControladorAlumno.seleccionar(tblData);
 		scrollPane.setViewportView(tblData);
 		
 		btnModificar = new JButton("MODIFICAR");
-		ControladorAlumno.modificar(tblData, data, model, dao, columnas);
 		btnModificar.setBounds(524, 343, 103, 23);
 		frame.getContentPane().add(btnModificar);
 		
 		btnAgregar = new JButton("AGREGAR");
-		ControladorAlumno.agregar(tblData, data, model, dao, columnas);	
 		btnAgregar.setBounds(637, 343, 89, 23);
 		frame.getContentPane().add(btnAgregar);
 		
 		btnEliminar = new JButton("ELIMINAR");
-		ControladorAlumno.eliminar(tblData, data, model, dao, columnas);	
 		btnEliminar.setBounds(736, 343, 89, 23);
 		frame.getContentPane().add(btnEliminar);
 		
-		/*
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(22, 40, 815, 265);
-		frame.getContentPane().add(scrollPane);
-		
-		tblData = new JTable();
-		tblData.setDefaultEditor(Object.class, null); //hace la tabla no editable
-		ControladorAlumno.seleccionar(tblData);
-		scrollPane.setViewportView(tblData);
-		*/
 		
 		JLabel lblNewLabel_5 = new JLabel("Nota: No se puede editar el Legajo al ser una clave primaria.");
 		lblNewLabel_5.setFont(new Font("Tahoma", Font.ITALIC, 13));

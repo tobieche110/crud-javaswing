@@ -14,10 +14,10 @@ import modelo.*;
 public class DAOalumno implements Operaciones{
 	
 	Database db = new Database();
-	alumno alumno = new alumno();
 	
 	@Override
 	public boolean insertar(Object obj) {
+		alumno alumno = new alumno();
 		alumno = (alumno) obj;
 		Connection con;
 		PreparedStatement pst;
@@ -53,6 +53,7 @@ public class DAOalumno implements Operaciones{
 
 	@Override
 	public boolean eliminar(Object obj) {
+		alumno alumno = new alumno();
 		alumno = (alumno) obj;
 		Connection con;
 		PreparedStatement pst;
@@ -85,6 +86,7 @@ public class DAOalumno implements Operaciones{
 
 	@Override
 	public boolean modificar(Object obj) {
+		alumno alumno = new alumno();
 		alumno = (alumno) obj;
 		Connection con;
 		PreparedStatement pst;
@@ -125,7 +127,6 @@ public class DAOalumno implements Operaciones{
 		Connection con;
 		PreparedStatement pst;
 		ResultSet rs;
-		
 		String sql = "SELECT * FROM alumno";
 		
 		try {

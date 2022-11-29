@@ -1,4 +1,4 @@
-package modelo;
+package dao;
 
 //Centraliza las conexiones a la base de datos
 public class Database {

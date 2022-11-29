@@ -1,5 +1,9 @@
 package modelo;
 
+import java.util.ArrayList;
+
+import dao.DAOalumno;
+
 //representa la tabla de la BDD
 public class alumno {
 	
@@ -7,10 +11,11 @@ public class alumno {
 	private String apellido;
 	private String nombre;
 	private int anioIngreso;
+	public DAOalumno dao;
 	
 	//Constructor
 	public alumno() {
-		
+		this.dao = new DAOalumno();
 	}
 	
 	public alumno(int legajo, String apellido, String nombre, int anioIngreso) {
@@ -54,4 +59,20 @@ public class alumno {
 		return anioIngreso;
 	}
 	
+	
+	public ArrayList<Object[]> consultarDAO(){
+		return this.dao.consultar();
+	}
+	
+	public boolean modificarDAO(Object obj) {
+		return this.dao.modificar(obj);
+	}
+	
+	public boolean insertarDAO(Object obj) {
+		return this.dao.insertar(obj);
+	}
+	
+	public boolean eliminarDAO(Object obj) {
+		return this.dao.eliminar(obj);
+	}
 }
